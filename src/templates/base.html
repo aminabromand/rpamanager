@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    
+    {% include 'base/css.html' %}
+
+
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+
+    <div class='container my-5'>
+    
+      {% block content %}{% endblock %}
+
+    </div>
+
+    {% include 'base/js.html' %}
+
+    {% block javascript %}{% endblock %}
+
+  </body>
+</html>
