@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, JsonResponse
 from django.views.generic import DetailView, CreateView, UpdateView, ListView
 from django.shortcuts import render, redirect, reverse
@@ -7,12 +9,12 @@ from .models import ServiceTask
 
 # Create your views here.
 
-class ServiceTaskListView(ListView):
+class ServiceTaskListView(LoginRequiredMixin, ListView):
     model = ServiceTask
     template_name = 'processes/service_task_list.html'
 
 
-class UpdateServiceTaskView(UpdateView):
+class UpdateServiceTaskView(LoginRequiredMixin, UpdateView):
     form_class = UpdateServiceTaskForm
     model = ServiceTask
     template_name = 'processes/service_task.html'
@@ -25,6 +27,7 @@ class UpdateServiceTaskView(UpdateView):
         return context
 
 
+@login_required
 def update_service_task_save(request, pk):
 	instance = ServiceTask.objects.get(pk=pk)
 	form = UpdateServiceTaskForm(request.POST, instance=instance)
@@ -42,6 +45,7 @@ def update_service_task_save(request, pk):
 	return redirect('processes:update_service_task', pk=pk)
 
 
+@login_required
 def create_service_task_save(request):
 	form = CreateServiceTaskForm(request.POST)
 	form_saved = False
@@ -59,6 +63,7 @@ def create_service_task_save(request):
 	return redirect('processes:update_service_task', pk=new_instance.pk)
 
 
+@login_required
 def delete_service_task(request, pk):
 	instance = ServiceTask.objects.get(pk=pk).delete()
 	if request.is_ajax():
@@ -69,7 +74,7 @@ def delete_service_task(request, pk):
 	return redirect('processes:service_task_list')
 
 
-class CreateServiceTaskView(CreateView):
+class CreateServiceTaskView(LoginRequiredMixin, CreateView):
     form_class = CreateServiceTaskForm
     model = ServiceTask
     template_name = 'processes/service_task.html'

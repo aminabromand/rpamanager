@@ -122,3 +122,7 @@ virtualenv/
 # static cdn files
 static_cdn/
 static_cdn/*
+static_src/
+static_src/*
+src/static_src/
+src/static_src/*
