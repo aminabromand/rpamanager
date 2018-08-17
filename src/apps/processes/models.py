@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 
+from apps.calcschemas.models import CalcSchema
+
 # Create your models here.
 
 class Process(models.Model):
@@ -41,12 +43,17 @@ SCHEDULE_TYPES = (
 class ServiceTask(models.Model):
 	name 					= models.CharField(max_length=120, unique=True)
 	description				= models.TextField()
+
 	application				= models.ForeignKey(Application, null=True, blank=True, on_delete=models.CASCADE)
 	processes				= models.ManyToManyField(Process, blank=True)
+	calcschema				= models.ForeignKey(CalcSchema, null=True, blank=True, on_delete=models.SET_NULL)
+
 	schedule_tpye			= models.CharField(max_length=20, choices=SCHEDULE_TYPES)
 	exec_duration_man		= models.IntegerField(default=0)
 	exec_duration_auto		= models.IntegerField(default=0)
 	instance_count_monthly	= models.IntegerField(default=0)
+
+	gateway_count			= models.IntegerField(default=0)
 
 	panel_count				= models.IntegerField(default=0)
 	input_field_count		= models.IntegerField(default=0)

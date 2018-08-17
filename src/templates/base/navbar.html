@@ -1,0 +1,41 @@
+{% url 'processes:service_task_list' as service_task_list_url %}
+{% url 'calcschemas:calc_schema_list' as calc_schema_list_url %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+
+	<div class='container'>
+	  <a class="navbar-brand" href="#">
+	  	<img src="https://getbootstrap.com/docs/4.1/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+	  	{% if brand_name %} {{ brand_name }} {% else %} Test {% endif %}
+	  </a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    <ul class="navbar-nav mr-auto">
+	      <li class="nav-item {% if request.path == service_task_list_url %}active{% endif %}">
+	        <a class="nav-link" href="{{ service_task_list_url }}">Service Tasks<span class="sr-only">(current)</span></a>
+	      </li>
+	      <li class="nav-item {% if request.path == calc_schema_list_url %}active{% endif %}">
+	        <a class="nav-link" href="{{ calc_schema_list_url }}">Calc Schemas</a>
+	      </li>
+
+
+	      {% if request.user.is_authenticated %}
+	      <li class="nav-item {% if request.path == '' %}active{% endif %}">
+	        <a class="nav-link" href="#">Logout</a>
+	      </li>
+	      {% else %}
+	      <li class="nav-item {% if request.path == '' %}active{% endif %}">
+	        <a class="nav-link" href="#">Login</a>
+	      </li>
+	      <li class="nav-item {% if request.path == '' %}active{% endif %}">
+	        <a class="nav-link" href="#">Register</a>
+	      </li>
+	      {% endif %}
+
+
+	  </div>
+	</div>
+</nav>

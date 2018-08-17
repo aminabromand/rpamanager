@@ -27,10 +27,10 @@ class UpdateServiceTaskForm(forms.ModelForm):
 		#	'schedule_tpye': 'Hollla :)',
 		#	'radio_button_count': 'Hollla :)',
 		#}
-		help_texts = {
-			'schedule_tpye': 'Beautiful help text.',
-			'radio_button_count': 'Beautiful help text.',
-		}
+		#help_texts = {
+		#	'schedule_tpye': 'Beautiful help text.',
+		#	'radio_button_count': 'Beautiful help text.',
+		#}
 		widgets = {
 			'description': Textarea(attrs={'cols': 20, 'rows': 3}),
 		}

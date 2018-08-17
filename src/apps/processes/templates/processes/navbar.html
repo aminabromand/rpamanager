@@ -12,7 +12,7 @@
 		<a class="dropdown-item{% if active_id == object.id %} active{% endif %}" href="{{ object.get_absolute_url }}">{{ object.name }}</a>
 		{% endfor %}
 		<div class="dropdown-divider"></div>
-  		<a class="dropdown-item" href="{{new_task_url}}">New Service Task</a>
+  		<a class="dropdown-item" href="{{ new_task_url }}">New Service Task</a>
     </div>
   </li>
 </ul>

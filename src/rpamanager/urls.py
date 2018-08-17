@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
 
+    url(r'^calcschemas/', include("apps.calcschemas.urls", namespace='calcschemas')),
     url(r'^processes/', include("apps.processes.urls", namespace='processes')),
     url(r'^$', RedirectView.as_view(url='/processes')),
 ]

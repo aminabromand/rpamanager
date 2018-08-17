@@ -1,0 +1,85 @@
+{% if object %}
+    {% url 'calcschemas:update_calc_schema-save' object.id as calc_schema_action %}
+    {% url 'calcschemas:delete_calc_schema' object.id as delete_calc_schema %}
+    {% url 'calcschemas:calc_schema_list' as calc_schema_list %}
+    
+    <form class="{{ form_class }}" method='POST' action="{{ calc_schema_action }}" delete="{{ delete_calc_schema }}" data-next-url="{{ calc_schema_list }}">
+{% else %}
+    {% url 'calcschemas:create_calc_schemasave' as calc_schema_action %}
+    
+    <form class="{{ form_class }}" method='POST' action="{{ calc_schema_action }}">
+
+        <table>
+            <tr><th><label for="{{ form.name.id_for_label }}">Name:</label></th><td>{{ form.name }}</td></tr>
+        </table>
+
+        
+        <hr/>
+{% endif %}
+
+        {% csrf_token %}
+
+        <b>Size</b> (Number of Elements * Number of Gateways)<b>:</b>
+        <br>
+        &apos;S&apos; &lt;
+        {{ form.size_m }}
+        &lt;= &apos;M&apos; &lt;
+        {{ form.size_l }}
+        &lt;= &apos;L&apos;
+        <br>
+
+        <hr/>
+
+        Effort Factors
+
+        <table>
+            <tr>
+                <th><label for="{{ form.effort_factor_s.id_for_label }}">&apos;S&apos;</label></th>
+                <th><label for="{{ form.effort_factor_m.id_for_label }}">&apos;M&apos;</label></th>
+                <th><label for="{{ form.effort_factor_l.id_for_label }}">&apos;L&apos;</label></th>
+            </tr>
+            <tr>
+                <td>{{ form.effort_factor_s }}</td>
+                <td>{{ form.effort_factor_m }}</td>
+                <td>{{ form.effort_factor_l }}</td>
+            </tr>
+        </table>
+                    
+        <hr/>
+
+        <table>
+            <tr><th>Element type</th><th>Base Effort (in h)</th><tr>
+                <th><label for="{{ form.panel_base_effort.id_for_label }}">Panel:</label></th>
+                <td>{{ form.effort_factor_s }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.input_field_base_effort.id_for_label }}">Input field:</label></th>
+                <td>{{ form.input_field_base_effort }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.button_base_effort.id_for_label }}">Button:</label></th>
+                <td>{{ form.button_base_effort }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.dropdown_base_effort.id_for_label }}">Dropdown:</label></th>
+                <td>{{ form.dropdown_base_effort }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.checkbox_base_effort.id_for_label }}">Checkbox:</label></th>
+                <td>{{ form.checkbox_base_effort }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.radio_button_base_effort.id_for_label }}">Radio button:</label></th>
+                <td>{{ form.radio_button_base_effort }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.file_input_base_effort.id_for_label }}">File input:</label></th>
+                <td>{{ form.file_input_base_effort }}</td>
+            </tr>
+        </table>
+        <div class='mx-3 my-3'>
+            <button type='submit' class='btn btn-default'>Save</button>
+            <button type='reset' class='btn btn-default'>Reset</button>
+            <button type='reset' name='delete' class='btn btn-default'>Delete</button>
+        </div>
+    </form>

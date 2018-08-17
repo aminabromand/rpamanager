@@ -10,125 +10,81 @@
 
 
 	<div class='container'>
-		<h1> Service Tasks </h1>
 		<div class='row'>
-	        <div class='col-12'>
-				{% if object %}
-					{% include 'processes/navbar.html' with objects=service_tasks active_id=object.id %}
-				{% else %}
-					{% include 'processes/navbar.html' with objects=service_tasks %}
-				{% endif %}
+			<div class='col-12 col-md-6'>
+					<h1> Service Tasks </h1>
+				<div class='row'>
+					<div class='col-12'>
+						{% if object %}
+							{% include 'processes/navbar.html' with objects=service_tasks active_id=object.id %}
+						{% else %}
+							{% include 'processes/navbar.html' with objects=service_tasks %}
+						{% endif %}
 
-	        </div>
-	    </div>
+					</div>
+				</div>
 
-	    <div class='row'>
-	        <div class='col-12 col-md-6'>
+				<div class='row'>
+					<div class='col-12'>
 
-	        	{% if object %}
-	        		{% url 'processes:update_service_task-save' object.id as service_task_action %}
-	        		{% url 'processes:delete_service_task' object.id as delete_service_task %}
-	        		{% url 'processes:service_task_list' as service_task_list %}
-					<h1> {{ object.name }} </h1>
-					<form class="service-task-form" method='POST' action="{{ service_task_action }}" delete="{{ delete_service_task }}" data-next-url="{{ service_task_list }}">
-				{% else %}
-					{% url 'processes:create_service_task-save' as service_task_action %}
-					<h1> New Service Task </h1>
-					<form class="service-task-form" method='POST' action="{{ service_task_action }}">
-				{% endif %}
-				
-					    {% csrf_token %}
-					    <table>
-							{{ form }}
-						</table>
-						<div class='mx-3 my-3'>
-						    <button type='submit' class='btn btn-default'>Save</button>
-						    <button type='reset' class='btn btn-default'>Reset</button>
-						    <button type='reset' name='delete' class='btn btn-default'>Delete</button>
-						</div>
-				</form>
+						{% if object %}
+							{% url 'processes:update_service_task-save' object.id as service_task_action %}
+							{% url 'processes:delete_service_task' object.id as delete_service_task %}
+							{% url 'processes:service_task_list' as service_task_list %}
+							<h1> {{ object.name }} </h1>
+							<form class="service-task-form" method='POST' action="{{ service_task_action }}" delete="{{ delete_service_task }}" data-next-url="{{ service_task_list }}">
+						{% else %}
+							{% url 'processes:create_service_task-save' as service_task_action %}
+							<h1> New Service Task </h1>
+							<form class="service-task-form" method='POST' action="{{ service_task_action }}">
+						{% endif %}
+						
+								{% csrf_token %}
+								<table>
+									{{ form }}
+								</table>
+								<div class='mx-3 my-3'>
+									<button type='submit' class='btn btn-default'>Save</button>
+									<button type='reset' class='btn btn-default'>Reset</button>
+									<button type='reset' name='delete' class='btn btn-default'>Delete</button>
+								</div>
+						</form>
+					</div>
+				</div>
 			</div>
 
 			<div class='col-12 col-md-6'>
-	        	<h1>Calculate Efforts</h1>
+				<h1>Calculate Efforts</h1>
 
-	        	<form class="service-task-calculation-form" method='POST' action="#">
-
-		        	<table>
-						<tr><th><label for="id_calc_effort">Total effort:</label></th><td><input type="text" name="name" maxlength="10" id="id_calc_effort" readonly size="5"> in h / <input type="text" name="name" maxlength="10" id="id_calc_effort_d" readonly size="5"> in days</td></tr>
-						<tr><th><label for="id_calc_size">Size:</label></th><td><input type="text" name="name" maxlength="10" id="id_calc_size" readonly></td></tr>
-					</table>
-
-
-
-					<hr/>
-
-
-
-					Size
-					<br>
-					&apos;S&apos; &lt;
-					<input type="number" name="name" min="0" max="999" id="id_calc_size_m" value="25" class="numberbox">
-					&lt;= &apos;M&apos; &lt;
-					<input type="number" name="name" min="0" max="999" id="id_calc_size_l" value="100" class="numberbox">
-					&lt;= &apos;L&apos;
-					<br>
-					# of Elements
-
-					<hr/>
-
-					Effort Factors
-
-					<table>
-						<tr><th>&apos;S&apos;</th><th>&apos;M&apos;</th><th>&apos;L&apos;</th></tr>
-						<tr>
-							<td><input class="numberbox" type="number" name="panel" value="1" required id="id_factor_s" step="0.01"></td>
-							<td><input class="numberbox" type="number" name="panel" value="1.5" required id="id_factor_m" step="0.01"></td>
-							<td><input class="numberbox" type="number" name="panel" value="3" required id="id_factor_l" step="0.01"></td>
-						</tr>
-					</table>
-					
-
-					<hr/>
-
-					<table>
-						<tr><th>Element type</th><th>Base Effort (in h)</th><tr>
-							<th><label for="id_panel_base">Panel:</label></th>
-							<td><input class="numberbox" type="number" name="panel" value="2" required id="id_panel_base"></td>
-						</tr>
-						<tr>
-							<th><label for="id_input_field_base">Input field:</label></th>
-							<td><input class="numberbox" type="number" name="input_field" value="1" required id="id_input_field_base"></td>
-						</tr>
-						<tr>
-							<th><label for="id_button_base">Button:</label></th>
-							<td><input class="numberbox" type="number" name="button" value="1" required id="id_button_base"></td>
-						</tr>
-						<tr>
-							<th><label for="id_dropdown_base">Dropdown:</label></th>
-							<td><input class="numberbox" type="number" name="dropdown" value="2" required id="id_dropdown_base"></td>
-						</tr>
-						<tr>
-							<th><label for="id_checkbox_base">Checkbox:</label></th>
-							<td><input class="numberbox" type="number" name="checkbox" value="1" required id="id_checkbox_base"></td>
-						</tr>
-						<tr>
-							<th><label for="id_radio_button_base">Radio button:</label></th>
-							<td><input class="numberbox" type="number" name="radio_button" value="2" required id="id_radio_button_base"></td>
-						</tr>
-						<tr>
-							<th><label for="id_file_input_base">File input:</label></th>
-							<td><input class="numberbox" type="number" name="file_input" value="4" required id="id_file_input_base"></td>
-						</tr>
-					</table>
-					<div class='mx-3 my-3'>
-					    <button type='reset' name='refresh' class='btn btn-default'>Refresh</button>
+				<div class='row'>
+					<div class='col-12'>
+						{% if calc_schema_object %}
+							{% include 'calcschemas/navbar.html' with objects=calc_schemas active_id=calc_schema_object.id %}
+						{% else %}
+							{% include 'calcschemas/navbar.html' with objects=calc_schemas %}
+						{% endif %}
 					</div>
-				</tr>
+				</div>
+				
+				<div class='row'>
+					<div class='col-12'>
 
+						{% if calc_schema_object %}
+							<h1> {{ calc_schema_object.name }} </h1>
+							{% include 'calcschemas/form.html' with form=calc_schema_form object=calc_schema_object form_class='calc-schema-form' %}
+						{% else %}
+							<h1> New Calc Schema </h1>
+							{% include 'calcschemas/form.html' with form=calc_schema_form object=None form_class='calc-schema-form' %}
+						{% endif %}
+
+					</div>
+				</div>
 			</div>
-	    </div>
+		</div>
 	</div>
+
+
+	        	
 
 {% endblock %}
 
@@ -172,107 +128,117 @@
 	
 	$(document).ready(function() {
 
-		var contactForm = $(".service-task-form");
-		var contactFormMethod = contactForm.attr("method");
-		var contactFormEndpoint = contactForm.attr("action");
+		function prepareForm(documentForm) {
 
-		var deleteBtn = contactForm.find("[name='delete']");
-		var contactFormDeleteEndpoint = contactForm.attr("delete");
-		var nextUrl = contactForm.attr('data-next-url');
-		
+			var documentFormMethod = documentForm.attr("method");
+			var documentFormEndpoint = documentForm.attr("action");
 
-		contactForm.submit(function(event) {
-			event.preventDefault();
+			var deleteBtn = documentForm.find("[name='delete']");
+			var documentFormDeleteEndpoint = documentForm.attr("delete");
+			var nextUrl = documentForm.attr('data-next-url');
+			
 
-			var contactFormData = contactForm.serialize();
+			documentForm.submit(function(event) {
+				event.preventDefault();
 
-			$.ajax({
-				method: contactFormMethod,
-				url: contactFormEndpoint,
-				data: contactFormData,
-				success: function(data) {
+				var documentFormData = documentForm.serialize();
 
-					//setTimeout(function() {
-					//	displaySubmitting(contactFormSubmitBtn, contactFormSubmitBtnTxt, false)}, 500);
+				$.ajax({
+					method: documentFormMethod,
+					url: documentFormEndpoint,
+					data: documentFormData,
+					success: function(data) {
 
-					//contactForm[0].reset();
-					$.alert({
-						title: "Success!",
-						// content: data.form_saved,
-						content: data.msg,
-						theme: "modern"});
-				},
-				error: function(errorData) {
-					console.log(errorData.responseJSON);
+						//setTimeout(function() {
+						//	displaySubmitting(documentFormSubmitBtn, documentFormSubmitBtnTxt, false)}, 500);
 
-					//setTimeout(function() {
-					//	displaySubmitting(contactFormSubmitBtn, contactFormSubmitBtnTxt, false)}, 500);
+						//documentForm[0].reset();
+						$.alert({
+							title: "Success!",
+							// content: data.form_saved,
+							content: data.msg,
+							theme: "modern"});
+					},
+					error: function(errorData) {
+						console.log(errorData.responseJSON);
 
-					var jsonData = errorData.responseJSON;
-					var msg = "";
+						//setTimeout(function() {
+						//	displaySubmitting(documentFormSubmitBtn, documentFormSubmitBtnTxt, false)}, 500);
 
-					$.each(jsonData, function(key, value) { // key, value VS array index, object
-						msg += key + ": " + value[0].message + "<br/>";
-					});
+						var jsonData = errorData.responseJSON;
+						var msg = "";
 
-					$.alert({
-						title: "Oops!",
-						content: "msg",
-						theme: "modern"});
-				}
+						$.each(jsonData, function(key, value) { // key, value VS array index, object
+							msg += key + ": " + value[0].message + "<br/>";
+						});
+
+						$.alert({
+							title: "Oops!",
+							content: "msg",
+							theme: "modern"});
+					}
+				});
 			});
-		});
 
 
-		function redirectToNext(nextPath, timeoffset) {
-			if (nextPath) {
-				setTimeout(function(){
-					window.location.href = nextPath;
-				}, timeoffset);
+			function redirectToNext(nextPath, timeoffset) {
+				if (nextPath) {
+					setTimeout(function(){
+						window.location.href = nextPath;
+					}, timeoffset);
+				}
 			}
+
+
+			deleteBtn.click(function(event) {
+				var documentFormData = documentForm.serialize();
+
+				$.ajax({
+					method: "DELETE",
+					url: documentFormDeleteEndpoint,
+					data: documentFormData,
+					success: function(data) {
+
+						//setTimeout(function() {
+						//	displaySubmitting(documentFormSubmitBtn, documentFormSubmitBtnTxt, false)}, 500);
+
+						//documentForm[0].reset();
+						$.alert({
+							title: "Success!",
+							// content: data.form_saved,
+							content: data.msg,
+							theme: "modern"});
+						redirectToNext(nextUrl, 1500);
+					},
+					error: function(errorData) {
+						console.log(errorData.responseJSON);
+
+						//setTimeout(function() {
+						//	displaySubmitting(documentFormSubmitBtn, documentFormSubmitBtnTxt, false)}, 500);
+
+						var jsonData = errorData.responseJSON;
+						var msg = "";
+
+						$.each(jsonData, function(key, value) { // key, value VS array index, object
+							msg += key + ": " + value[0].message + "<br/>";
+						});
+
+						$.alert({
+							title: "Oops!",
+							content: "msg",
+							theme: "modern"});
+					}
+				});
+			});
 		}
 
+		var serviceTaskForm = $(".service-task-form");
+		prepareForm(serviceTaskForm);
+		var calcSchemaForm = $(".calc-schema-form");
+		prepareForm(calcSchemaForm);
+		
 
-		deleteBtn.click(function(event) {
-			var contactFormData = contactForm.serialize();
 
-			$.ajax({
-				method: "DELETE",
-				url: contactFormDeleteEndpoint,
-				data: contactFormData,
-				success: function(data) {
-
-					//setTimeout(function() {
-					//	displaySubmitting(contactFormSubmitBtn, contactFormSubmitBtnTxt, false)}, 500);
-
-					//contactForm[0].reset();
-					$.alert({
-						title: "Success!",
-						// content: data.form_saved,
-						content: data.msg,
-						theme: "modern"});
-					redirectToNext(nextUrl, 1500);
-				},
-				error: function(errorData) {
-					console.log(errorData.responseJSON);
-
-					//setTimeout(function() {
-					//	displaySubmitting(contactFormSubmitBtn, contactFormSubmitBtnTxt, false)}, 500);
-
-					var jsonData = errorData.responseJSON;
-					var msg = "";
-
-					$.each(jsonData, function(key, value) { // key, value VS array index, object
-						msg += key + ": " + value[0].message + "<br/>";
-					});
-
-					$.alert({
-						title: "Oops!",
-						content: "msg",
-						theme: "modern"});
-				}
-			});
-		});
 	});
 
 </script>
@@ -333,11 +299,11 @@
 
 
 			if (size == 'L') {
-				size_factor = parseInt($("#id_factor_l").val());;
+				size_factor = parseFloat($("#id_factor_l").val());;
 			} else if (size == 'M') {
-				size_factor = parseInt($("#id_factor_m").val());;
+				size_factor = parseFloat($("#id_factor_m").val());;
 			} else {
-				size_factor = parseInt($("#id_factor_s").val());;
+				size_factor = parseFloat($("#id_factor_s").val());;
 			}
 
 			effort = effort * size_factor;

@@ -1,7 +1,7 @@
 # amins ecommerce
 
 ## Content
-simple ecommerce web framework
+simple task manager
 
 ## Languages
 - Python
@@ -10,7 +10,7 @@ simple ecommerce web framework
 - CSS
 
 ## Live
-The live project can be found at [This Link](https://amins-ecommerce.herokuapp.com/).
+The live project can be found at [This Link](https://rpamanager.herokuapp.com/).
 
 > Please be patient during load as the service needs to start on initial requests
 

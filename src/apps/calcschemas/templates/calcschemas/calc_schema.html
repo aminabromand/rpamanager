@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style type="text/css">
+	.numberbox {
+    	width: 5em;
+	}
+</style>
+
+
+	<div class='container'>
+		<h1> Calc Schema </h1>
+		<div class='row'>
+	        <div class='col-12'>
+				{% if object %}
+					{% include 'calcschemas/navbar.html' with objects=calc_schemas active_id=object.id %}
+				{% else %}
+					{% include 'calcschemas/navbar.html' with objects=calc_schemas %}
+				{% endif %}
+
+	        </div>
+		</div>
+		<div class='row'>
+			<div class='col-12 col-md-6'>
+
+				{% if object %}
+					<h1> {{ object.name }} </h1>
+					{% include 'calcschemas/form.html' with form=form object=object  form_class='calc-schema-form'  %}
+				{% else %}
+					<h1> New Calc Schema </h1>
+					{% include 'calcschemas/form.html' with form=form  form_class='calc-schema-form'  %}
+				{% endif %}
+
+			</div>
+		</div>
+	    
+	</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+});
+</script>
+
+<script type="text/javascript">
+	
+	$(document).ready(function() {
+
+		var contactForm = $(".calc-schema-form");
+		var contactFormMethod = contactForm.attr("method");
+		var contactFormEndpoint = contactForm.attr("action");
+
+		var deleteBtn = contactForm.find("[name='delete']");
+		var contactFormDeleteEndpoint = contactForm.attr("delete");
+		var nextUrl = contactForm.attr('data-next-url');
+		
+
+		contactForm.submit(function(event) {
+			event.preventDefault();
+
+			var contactFormData = contactForm.serialize();
+
+			$.ajax({
+				method: contactFormMethod,
+				url: contactFormEndpoint,
+				data: contactFormData,
+				success: function(data) {
+
+					//setTimeout(function() {
+					//	displaySubmitting(contactFormSubmitBtn, contactFormSubmitBtnTxt, false)}, 500);
+
+					//contactForm[0].reset();
+					$.alert({
+						title: "Success!",
+						// content: data.form_saved,
+						content: data.msg,
+						theme: "modern"});
+				},
+				error: function(errorData) {
+					console.log(errorData.responseJSON);
+
+					//setTimeout(function() {
+					//	displaySubmitting(contactFormSubmitBtn, contactFormSubmitBtnTxt, false)}, 500);
+
+					var jsonData = errorData.responseJSON;
+					var msg = "";
+
+					$.each(jsonData, function(key, value) { // key, value VS array index, object
+						msg += key + ": " + value[0].message + "<br/>";
+					});
+
+					$.alert({
+						title: "Oops!",
+						content: "msg",
+						theme: "modern"});
+				}
+			});
+		});
+
+
+		function redirectToNext(nextPath, timeoffset) {
+			if (nextPath) {
+				setTimeout(function(){
+					window.location.href = nextPath;
+				}, timeoffset);
+			}
+		}
+
+
+		deleteBtn.click(function(event) {
+			var contactFormData = contactForm.serialize();
+
+			$.ajax({
+				method: "DELETE",
+				url: contactFormDeleteEndpoint,
+				data: contactFormData,
+				success: function(data) {
+
+					//setTimeout(function() {
+					//	displaySubmitting(contactFormSubmitBtn, contactFormSubmitBtnTxt, false)}, 500);
+
+					//contactForm[0].reset();
+					$.alert({
+						title: "Success!",
+						// content: data.form_saved,
+						content: data.msg,
+						theme: "modern"});
+					redirectToNext(nextUrl, 1500);
+				},
+				error: function(errorData) {
+					console.log(errorData.responseJSON);
+
+					//setTimeout(function() {
+					//	displaySubmitting(contactFormSubmitBtn, contactFormSubmitBtnTxt, false)}, 500);
+
+					var jsonData = errorData.responseJSON;
+					var msg = "";
+
+					$.each(jsonData, function(key, value) { // key, value VS array index, object
+						msg += key + ": " + value[0].message + "<br/>";
+					});
+
+					$.alert({
+						title: "Oops!",
+						content: "msg",
+						theme: "modern"});
+				}
+			});
+		});
+	});
+
+</script>
+
+{% endblock %}
+
+

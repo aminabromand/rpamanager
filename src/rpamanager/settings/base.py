@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # my apps
+    'apps.calcschemas',
     'apps.processes',
     'apps.accounts',
 ]
