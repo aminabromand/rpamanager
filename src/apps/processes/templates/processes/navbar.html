@@ -1,7 +1,7 @@
 {% url 'processes:create_service_task' as new_task_url %}
 {% url 'processes:service_task_list' as service_task_list %}
 
-<ul class="nav nav-pills">
+<ul class="nav nav-pills {{ object_type }}">
   <li class="nav-item">
     <a class="nav-link" href="{{ service_task_list }}">Back to List</a>
   </li>
@@ -9,7 +9,7 @@
     <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Service Tasks</a>
     <div class="dropdown-menu">
       {% for object in objects %}
-		<a class="dropdown-item{% if active_id == object.id %} active{% endif %}" href="{{ object.get_absolute_url }}">{{ object.name }}</a>
+		<a class="dropdown-item{% if active_id == object.id %} active{% endif %} model-object" model-object-id="{{ object.id }}" href="{{ object.get_absolute_url }}">{{ object.name }}</a>
 		{% endfor %}
 		<div class="dropdown-divider"></div>
   		<a class="dropdown-item" href="{{ new_task_url }}">New Service Task</a>

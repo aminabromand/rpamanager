@@ -1,0 +1,79 @@
+{% if object %}
+    {% url 'processes:update_service_task-save' object.id as service_task_action %}
+    {% url 'processes:delete_service_task' object.id as delete_service_task %}
+    {% url 'processes:service_task_list' as service_task_list %}
+    <form class="service-task-form" method='POST' action="{{ service_task_action }}" delete="{{ delete_service_task }}" data-next-url="{{ service_task_list }}">
+        <table>
+            <tr><col width="100"><th>Name:</th><td><b><u>{{ object.name }}</u></b></td></tr>
+        </table>
+        <hr/>
+{% else %}
+    {% url 'processes:create_service_task-save' as service_task_action %}
+    <form class="service-task-form" method='POST' action="{{ service_task_action }}">
+        <table>
+            <tr><col width="100"><th><label for="{{ form.name.id_for_label }}">Name:</label></th><td>{{ form.name }}</td></tr>
+        </table>
+        <hr/>
+{% endif %}
+
+        {% csrf_token %}
+        <table>
+            <tr><th>Element type</th><th>Base Effort (in h)</th><tr>
+                <th><label for="{{ form.description.id_for_label }}">Description:</label></th>
+                <td>{{ form.description }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.schedule_type.id_for_label }}">Schedule type:</label></th>
+                <td>{{ form.schedule_type }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.exec_duration_man.id_for_label }}">Exec duration man:</label></th>
+                <td>{{ form.exec_duration_man }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.exec_duration_auto.id_for_label }}">Exec duration auto:</label></th>
+                <td>{{ form.exec_duration_auto }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.instance_count_monthly.id_for_label }}">Instance count monthly:</label></th>
+                <td>{{ form.instance_count_monthly }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.panel_count.id_for_label }}"><font color="green">Panel count:</font></label></th>
+                <td>{{ form.panel_count }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.input_field_count.id_for_label }}"><font color="green">Input field count:</font></label></th>
+                <td>{{ form.input_field_count }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.button_count.id_for_label }}"><font color="green">Button count:</font></label></th>
+                <td>{{ form.button_count }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.dropdown_count.id_for_label }}"><font color="green">Dropdown count:</font></label></th>
+                <td>{{ form.dropdown_count }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.checkbox_count.id_for_label }}"><font color="green">Checkbox count:</font></label></th>
+                <td>{{ form.checkbox_count }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.radio_button_count.id_for_label }}"><font color="green">Radio button count:</font></label></th>
+                <td>{{ form.radio_button_count }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.file_input_count.id_for_label }}"><font color="green">File input count:</font></label></th>
+                <td>{{ form.file_input_count }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.file_input_count.id_for_label }}"><font color="red">Gateway count:</font></label></th>
+                <td>{{ form.gateway_count }}</td>
+            </tr>
+        </table>
+        <div class='mx-3 my-3'>
+            <button type='submit' class='btn btn-default'>Save</button>
+            <button type='reset' class='btn btn-default'>Reset</button>
+            <button type='reset' name='delete' class='btn btn-default'>Delete</button>
+        </div>
+</form>

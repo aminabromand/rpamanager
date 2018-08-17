@@ -6,6 +6,7 @@ from django.views.generic.base import View
 from django.shortcuts import render, redirect, reverse
 
 from apps.calcschemas.forms import UpdateCalcSchemaForm, CreateCalcSchemaForm
+from apps.calcschemas.models import CalcSchema
 
 from .forms import UpdateServiceTaskForm, CreateServiceTaskForm
 from .models import ServiceTask
@@ -17,16 +18,16 @@ class ServiceTaskListView(LoginRequiredMixin, ListView):
     template_name = 'processes/service_task_list.html'
 
 
-class ServiceTaskView(View):
+class ServiceTaskView(LoginRequiredMixin, View):
     def get_context_data(self, *args, **kwargs):
         context = super(ServiceTaskView, self).get_context_data(*args, **kwargs)
         qs = CalcSchema.objects.all()
         if qs.exists():
-        	context['calc_schemas'] = qs
+            context['calc_schemas'] = qs
         return context
 
 
-class UpdateServiceTaskView(LoginRequiredMixin, UpdateView):
+class UpdateServiceTaskView(ServiceTaskView, UpdateView):
     form_class = UpdateServiceTaskForm
     model = ServiceTask
     template_name = 'processes/service_task.html'
@@ -37,8 +38,8 @@ class UpdateServiceTaskView(LoginRequiredMixin, UpdateView):
         if qs.exists():
             context['service_tasks'] = qs
         if self.object.calcschema:
-            context['calc_schema_object'] = calc_schema
-            calc_schema_form = UpdateCalcSchemaForm(self.object.calcschema)
+            context['calc_schema_object'] = self.object.calcschema
+            calc_schema_form = UpdateCalcSchemaForm(instance=self.object.calcschema)
             context['calc_schema_form'] = calc_schema_form
         else:
             calc_schema_form = CreateCalcSchemaForm()
@@ -56,51 +57,46 @@ class CreateServiceTaskView(LoginRequiredMixin, CreateView):
         qs = ServiceTask.objects.all()
         if qs.exists():
         	context['service_tasks'] = qs
+        calc_schema_form = CreateCalcSchemaForm()
+        context['calc_schema_form'] = calc_schema_form
         return context
 
 
 @login_required
-def update_service_task_save(request, pk):
-	instance = ServiceTask.objects.get(pk=pk)
-	form = UpdateServiceTaskForm(request.POST, instance=instance)
-	form_saved = False
-	msg = 'error'
-	if form.is_valid():
-		form.save();
-		form_saved = True
-		msg = 'task saved'
-	if request.is_ajax():
-		json_data = {
-				"msg": msg,
-		}
-		return JsonResponse(json_data)
-	return redirect('processes:update_service_task', pk=pk)
+def save_service_task(request, pk=None):
+    instance = None
+    if pk:
+        instance = ServiceTask.objects.get(pk=pk)
+        form = UpdateServiceTaskForm(request.POST, instance=instance)
+    else:
+        form = CreateServiceTaskForm(request.POST)
+    form_saved = False
+    msg = 'error'
+    if form.is_valid():
+        instance = form.save(commit=False)
 
-
-@login_required
-def create_service_task_save(request):
-	form = CreateServiceTaskForm(request.POST)
-	form_saved = False
-	msg = 'error'
-	new_instance = None
-	if form.is_valid():
-		form.save();
-		new_instance = form_saved = True
-		msg = 'task saved'
-	if request.is_ajax():
-		json_data = {
-				"msg": msg,
-		}
-		return JsonResponse(json_data)
-	return redirect('processes:update_service_task', pk=new_instance.pk)
+        calc_schema_id = request.POST.get("reference", None)
+        if calc_schema_id:
+            calc_schema_instance = CalcSchema.objects.get(pk=calc_schema_id)
+            instance.calcschema = calc_schema_instance
+        instance.save()
+        form.save_m2m()
+        form_saved = True
+        msg = 'task saved'
+    if request.is_ajax():
+        json_data = {
+                "msg": msg,
+        }
+        return JsonResponse(json_data)
+    return redirect('processes:update_service_task', pk=instance.pk)
 
 
 @login_required
 def delete_service_task(request, pk):
-	instance = ServiceTask.objects.get(pk=pk).delete()
-	if request.is_ajax():
-		json_data = {
-				"nextPath": reverse('processes:service_task_list'),
-		}
-		return JsonResponse(json_data)
-	return redirect('processes:service_task_list')
+    instance = ServiceTask.objects.get(pk=pk).delete()
+    if request.is_ajax():
+        json_data = {
+                "nextPath": reverse('processes:service_task_list'),
+        }
+        return JsonResponse(json_data)
+    return redirect('processes:service_task_list')

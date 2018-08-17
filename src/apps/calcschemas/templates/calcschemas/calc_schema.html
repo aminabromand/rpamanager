@@ -14,21 +14,21 @@
 		<div class='row'>
 	        <div class='col-12'>
 				{% if object %}
-					{% include 'calcschemas/navbar.html' with objects=calc_schemas active_id=object.id %}
+					{% include 'calcschemas/navbar.html' with objects=calc_schemas active_id=object.id object_type='calc_schemas' %}
 				{% else %}
-					{% include 'calcschemas/navbar.html' with objects=calc_schemas %}
+					{% include 'calcschemas/navbar.html' with objects=calc_schemas object_type='calc_schemas' %}
 				{% endif %}
 
 	        </div>
 		</div>
-		<div class='row'>
-			<div class='col-12 col-md-6'>
+		<div class='row mt-3'>
+			<div class='col-12'>
 
 				{% if object %}
-					<h1> {{ object.name }} </h1>
+					<!--<h1> {{ object.name }} </h1>-->
 					{% include 'calcschemas/form.html' with form=form object=object  form_class='calc-schema-form'  %}
 				{% else %}
-					<h1> New Calc Schema </h1>
+					<!--<h1> New Calc Schema </h1>-->
 					{% include 'calcschemas/form.html' with form=form  form_class='calc-schema-form'  %}
 				{% endif %}
 

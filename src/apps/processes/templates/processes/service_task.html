@@ -16,39 +16,25 @@
 				<div class='row'>
 					<div class='col-12'>
 						{% if object %}
-							{% include 'processes/navbar.html' with objects=service_tasks active_id=object.id %}
+							{% include 'processes/navbar.html' with objects=service_tasks active_id=object.id object_type='service_tasks' %}
 						{% else %}
-							{% include 'processes/navbar.html' with objects=service_tasks %}
+							{% include 'processes/navbar.html' with objects=service_tasks object_type='service_tasks' %}
 						{% endif %}
 
 					</div>
 				</div>
 
-				<div class='row'>
+				<div class='row mt-3'>
 					<div class='col-12'>
-
 						{% if object %}
-							{% url 'processes:update_service_task-save' object.id as service_task_action %}
-							{% url 'processes:delete_service_task' object.id as delete_service_task %}
-							{% url 'processes:service_task_list' as service_task_list %}
-							<h1> {{ object.name }} </h1>
-							<form class="service-task-form" method='POST' action="{{ service_task_action }}" delete="{{ delete_service_task }}" data-next-url="{{ service_task_list }}">
+							<!--<h1> {{ object.name }} </h1>-->
+							{% include 'processes/form.html' with form=form object=object  form_class='service-task-form'  %}
 						{% else %}
-							{% url 'processes:create_service_task-save' as service_task_action %}
-							<h1> New Service Task </h1>
-							<form class="service-task-form" method='POST' action="{{ service_task_action }}">
+							<!--<h1> New Calc Schema </h1>-->
+							{% include 'processes/form.html' with form=form  form_class='service-task-form'  %}
 						{% endif %}
+
 						
-								{% csrf_token %}
-								<table>
-									{{ form }}
-								</table>
-								<div class='mx-3 my-3'>
-									<button type='submit' class='btn btn-default'>Save</button>
-									<button type='reset' class='btn btn-default'>Reset</button>
-									<button type='reset' name='delete' class='btn btn-default'>Delete</button>
-								</div>
-						</form>
 					</div>
 				</div>
 			</div>
@@ -56,13 +42,28 @@
 			<div class='col-12 col-md-6'>
 				<h1>Calculate Efforts</h1>
 
+				
+
 				<div class='row'>
 					<div class='col-12'>
 						{% if calc_schema_object %}
-							{% include 'calcschemas/navbar.html' with objects=calc_schemas active_id=calc_schema_object.id %}
+							{% include 'calcschemas/navbar.html' with objects=calc_schemas active_id=calc_schema_object.id object_type='calc_schemas' %}
 						{% else %}
-							{% include 'calcschemas/navbar.html' with objects=calc_schemas %}
+							{% include 'calcschemas/navbar.html' with objects=calc_schemas object_type='calc_schemas' %}
 						{% endif %}
+					</div>
+				</div>
+
+				<div class='row'>
+					<div class='col-12 mt-3''>
+	
+						<form class="service-task-calculation-form" method='POST' action="#">
+						<table>
+							<tr><th><label for="id_calc_effort">Total effort:</label></th><td><input type="text" name="name" maxlength="10" id="id_calc_effort" readonly size="5"> in h /</td><td><input type="text" name="name" maxlength="10" id="id_calc_effort_d" readonly size="5"> in days</td></tr>
+							<tr><th><label for="id_calc_size">Size:</label></th><td><input type="text" name="name" maxlength="10" id="id_calc_size" readonly size="5"></td><td><button type='reset' name='refresh' class='btn btn-default'>Refresh</button></td></tr>
+						</table>
+						</form>
+						<hr>
 					</div>
 				</div>
 				
@@ -70,10 +71,8 @@
 					<div class='col-12'>
 
 						{% if calc_schema_object %}
-							<h1> {{ calc_schema_object.name }} </h1>
 							{% include 'calcschemas/form.html' with form=calc_schema_form object=calc_schema_object form_class='calc-schema-form' %}
 						{% else %}
-							<h1> New Calc Schema </h1>
 							{% include 'calcschemas/form.html' with form=calc_schema_form object=None form_class='calc-schema-form' %}
 						{% endif %}
 
@@ -128,7 +127,7 @@
 	
 	$(document).ready(function() {
 
-		function prepareForm(documentForm) {
+		function prepareForm(documentForm, check_ref) {
 
 			var documentFormMethod = documentForm.attr("method");
 			var documentFormEndpoint = documentForm.attr("action");
@@ -136,12 +135,26 @@
 			var deleteBtn = documentForm.find("[name='delete']");
 			var documentFormDeleteEndpoint = documentForm.attr("delete");
 			var nextUrl = documentForm.attr('data-next-url');
-			
+
+			function get_ref() {
+				var calc_schema_list = $('.calc_schemas');
+				var calc_schema_active = calc_schema_list.find("a.model-object.active");
+				var object_id = calc_schema_active.attr("model-object-id");
+				if ('undefined' !== typeof object_id) {
+					return object_id
+				}
+				return ""
+			}
+
 
 			documentForm.submit(function(event) {
 				event.preventDefault();
 
 				var documentFormData = documentForm.serialize();
+
+				if (check_ref) {
+					documentFormData = documentFormData + "&reference=" + get_ref();
+				}
 
 				$.ajax({
 					method: documentFormMethod,
@@ -233,9 +246,9 @@
 		}
 
 		var serviceTaskForm = $(".service-task-form");
-		prepareForm(serviceTaskForm);
+		prepareForm(serviceTaskForm, true);
 		var calcSchemaForm = $(".calc-schema-form");
-		prepareForm(calcSchemaForm);
+		prepareForm(calcSchemaForm, false);
 		
 
 
@@ -254,8 +267,8 @@
 		var effort_field = $("#id_calc_effort");
 		var effort_field_d = $("#id_calc_effort_d");
 
-		var size_m = parseInt($("#id_calc_size_m").val());
-		var size_l = parseInt($("#id_calc_size_l").val());
+		var size_m = parseInt($("#id_size_m").val());
+		var size_l = parseInt($("#id_size_l").val());
 		
 
 
@@ -270,6 +283,10 @@
 			size = size + parseInt($("#id_checkbox_count").val());
 			size = size + parseInt($("#id_radio_button_count").val());
 			size = size + parseInt($("#id_file_input_count").val());
+
+			size = size * parseInt($("#id_gateway_count").val());
+
+			console.log(size)
 
 			var size_selection = 'X';
 
@@ -289,21 +306,21 @@
 
 			var effort = 0;
 
-			effort = effort + parseInt($("#id_panel_base").val()) * parseInt($("#id_panel_count").val());
-			effort = effort + parseInt($("#id_input_field_base").val()) * parseInt($("#id_input_field_count").val());
-			effort = effort + parseInt($("#id_button_base").val()) * parseInt($("#id_button_count").val())
-			effort = effort + parseInt($("#id_dropdown_base").val()) * parseInt($("#id_dropdown_count").val());
-			effort = effort + parseInt($("#id_checkbox_base").val()) * parseInt($("#id_checkbox_count").val());
-			effort = effort + parseInt($("#id_radio_button_base").val()) * parseInt($("#id_radio_button_count").val());
-			effort = effort + parseInt($("#id_file_input_base").val()) * parseInt($("#id_file_input_count").val());
+			effort = effort + parseInt($("#id_panel_base_effort").val()) * parseInt($("#id_panel_count").val());
+			effort = effort + parseInt($("#id_input_field_base_effort").val()) * parseInt($("#id_input_field_count").val());
+			effort = effort + parseInt($("#id_button_base_effort").val()) * parseInt($("#id_button_count").val())
+			effort = effort + parseInt($("#id_dropdown_base_effort").val()) * parseInt($("#id_dropdown_count").val());
+			effort = effort + parseInt($("#id_checkbox_base_effort").val()) * parseInt($("#id_checkbox_count").val());
+			effort = effort + parseInt($("#id_radio_button_base_effort").val()) * parseInt($("#id_radio_button_count").val());
+			effort = effort + parseInt($("#id_file_input_base_effort").val()) * parseInt($("#id_file_input_count").val());
 
 
 			if (size == 'L') {
-				size_factor = parseFloat($("#id_factor_l").val());;
+				size_factor = parseFloat($("#id_effort_factor_l").val());;
 			} else if (size == 'M') {
-				size_factor = parseFloat($("#id_factor_m").val());;
+				size_factor = parseFloat($("#id_effort_factor_m").val());;
 			} else {
-				size_factor = parseFloat($("#id_factor_s").val());;
+				size_factor = parseFloat($("#id_effort_factor_s").val());;
 			}
 
 			effort = effort * size_factor;
@@ -334,6 +351,13 @@
 
 		refreshCalculation();
 	});
+
+</script>
+
+
+<script type="text/javascript">
+
+
 
 </script>
 

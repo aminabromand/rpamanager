@@ -25,7 +25,7 @@ APP_TYPES = (
 class Application(models.Model):
 	name			= models.CharField(max_length=120)
 	description		= models.TextField()
-	app_tpye		= models.CharField(max_length=20, choices=APP_TYPES)
+	app_type		= models.CharField(max_length=20, choices=APP_TYPES)
 	has_interface	= models.BooleanField(default=False)
 
 	updated 		= models.DateTimeField(auto_now=True)
@@ -48,7 +48,7 @@ class ServiceTask(models.Model):
 	processes				= models.ManyToManyField(Process, blank=True)
 	calcschema				= models.ForeignKey(CalcSchema, null=True, blank=True, on_delete=models.SET_NULL)
 
-	schedule_tpye			= models.CharField(max_length=20, choices=SCHEDULE_TYPES)
+	schedule_type			= models.CharField(max_length=20, choices=SCHEDULE_TYPES)
 	exec_duration_man		= models.IntegerField(default=0)
 	exec_duration_auto		= models.IntegerField(default=0)
 	instance_count_monthly	= models.IntegerField(default=0)

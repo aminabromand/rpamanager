@@ -2,24 +2,23 @@
     {% url 'calcschemas:update_calc_schema-save' object.id as calc_schema_action %}
     {% url 'calcschemas:delete_calc_schema' object.id as delete_calc_schema %}
     {% url 'calcschemas:calc_schema_list' as calc_schema_list %}
-    
     <form class="{{ form_class }}" method='POST' action="{{ calc_schema_action }}" delete="{{ delete_calc_schema }}" data-next-url="{{ calc_schema_list }}">
-{% else %}
-    {% url 'calcschemas:create_calc_schemasave' as calc_schema_action %}
-    
-    <form class="{{ form_class }}" method='POST' action="{{ calc_schema_action }}">
-
         <table>
-            <tr><th><label for="{{ form.name.id_for_label }}">Name:</label></th><td>{{ form.name }}</td></tr>
+            <tr><col width="100"><th>Name:</th><td><b><u>{{ object.name }}</u></b></td></tr>
         </table>
-
-        
+        <hr/>
+{% else %}
+    {% url 'calcschemas:create_calc_schema-save' as calc_schema_action %}
+    <form class="{{ form_class }}" method='POST' action="{{ calc_schema_action }}">
+        <table>
+            <tr><col width="100"><th><label for="{{ form.name.id_for_label }}">Name:</label></th><td>{{ form.name }}</td></tr>
+        </table>
         <hr/>
 {% endif %}
 
         {% csrf_token %}
 
-        <b>Size</b> (Number of Elements * Number of Gateways)<b>:</b>
+        <b>Size</b> (<font color="green">Total Element count</font> * <font color="red">Gateway count)</font><b>:</b>
         <br>
         &apos;S&apos; &lt;
         {{ form.size_m }}
@@ -49,31 +48,31 @@
 
         <table>
             <tr><th>Element type</th><th>Base Effort (in h)</th><tr>
-                <th><label for="{{ form.panel_base_effort.id_for_label }}">Panel:</label></th>
-                <td>{{ form.effort_factor_s }}</td>
+                <th><label for="{{ form.panel_base_effort.id_for_label }}"><font color="green">Panel:</font></label></th>
+                <td>{{ form.panel_base_effort }}</td>
             </tr>
             <tr>
-                <th><label for="{{ form.input_field_base_effort.id_for_label }}">Input field:</label></th>
+                <th><label for="{{ form.input_field_base_effort.id_for_label }}"><font color="green">Input field:</font></label></th>
                 <td>{{ form.input_field_base_effort }}</td>
             </tr>
             <tr>
-                <th><label for="{{ form.button_base_effort.id_for_label }}">Button:</label></th>
+                <th><label for="{{ form.button_base_effort.id_for_label }}"><font color="green">Button:</font></label></th>
                 <td>{{ form.button_base_effort }}</td>
             </tr>
             <tr>
-                <th><label for="{{ form.dropdown_base_effort.id_for_label }}">Dropdown:</label></th>
+                <th><label for="{{ form.dropdown_base_effort.id_for_label }}"><font color="green">Dropdown:</font></label></th>
                 <td>{{ form.dropdown_base_effort }}</td>
             </tr>
             <tr>
-                <th><label for="{{ form.checkbox_base_effort.id_for_label }}">Checkbox:</label></th>
+                <th><label for="{{ form.checkbox_base_effort.id_for_label }}"><font color="green">Checkbox:</font></label></th>
                 <td>{{ form.checkbox_base_effort }}</td>
             </tr>
             <tr>
-                <th><label for="{{ form.radio_button_base_effort.id_for_label }}">Radio button:</label></th>
+                <th><label for="{{ form.radio_button_base_effort.id_for_label }}"><font color="green">Radio button:</font></label></th>
                 <td>{{ form.radio_button_base_effort }}</td>
             </tr>
             <tr>
-                <th><label for="{{ form.file_input_base_effort.id_for_label }}">File input:</label></th>
+                <th><label for="{{ form.file_input_base_effort.id_for_label }}"><font color="green">File input:</font></label></th>
                 <td>{{ form.file_input_base_effort }}</td>
             </tr>
         </table>

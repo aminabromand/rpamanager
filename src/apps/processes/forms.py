@@ -11,7 +11,7 @@ class UpdateServiceTaskForm(forms.ModelForm):
 			'description',
 			# 'application',
 			# 'processes',
-			'schedule_tpye',
+			'schedule_type',
 			'exec_duration_man',
 			'exec_duration_auto',
 			'instance_count_monthly',
@@ -22,6 +22,7 @@ class UpdateServiceTaskForm(forms.ModelForm):
 			'checkbox_count',
 			'radio_button_count',
 			'file_input_count',
+			'gateway_count',
 		]
 		#labels = {
 		#	'schedule_tpye': 'Hollla :)',
@@ -44,7 +45,7 @@ class CreateServiceTaskForm(forms.ModelForm):
 			'description',
 			# 'application',
 			# 'processes',
-			'schedule_tpye',
+			'schedule_type',
 			'exec_duration_man',
 			'exec_duration_auto',
 			'instance_count_monthly',
@@ -55,6 +56,7 @@ class CreateServiceTaskForm(forms.ModelForm):
 			'checkbox_count',
 			'radio_button_count',
 			'file_input_count',
+			'gateway_count',
 		]
 		#labels = {
 		#	'schedule_tpye': 'Hollla :)',

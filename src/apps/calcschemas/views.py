@@ -28,53 +28,6 @@ class UpdateCalcSchemaView(LoginRequiredMixin, UpdateView):
         return context
 
 
-@login_required
-def update_calc_schema_save(request, pk):
-	instance = CalcSchema.objects.get(pk=pk)
-	form = UpdateCalcSchemaForm(request.POST, instance=instance)
-	form_saved = False
-	msg = 'error'
-	if form.is_valid():
-		form.save();
-		form_saved = True
-		msg = 'task saved'
-	if request.is_ajax():
-		json_data = {
-				"msg": msg,
-		}
-		return JsonResponse(json_data)
-	return redirect('calcschemas:update_calc_schema', pk=pk)
-
-
-@login_required
-def create_calc_schema_save(request):
-	form = CreateCalcSchemaForm(request.POST)
-	form_saved = False
-	msg = 'error'
-	new_instance = None
-	if form.is_valid():
-		form.save();
-		new_instance = form_saved = True
-		msg = 'task saved'
-	if request.is_ajax():
-		json_data = {
-				"msg": msg,
-		}
-		return JsonResponse(json_data)
-	return redirect('calcschemas:update_calc_schema', pk=new_instance.pk)
-
-
-@login_required
-def delete_calc_schema(request, pk):
-	instance = CalcSchema.objects.get(pk=pk).delete()
-	if request.is_ajax():
-		json_data = {
-				"nextPath": reverse('calcschemas:calc_schema_list'),
-		}
-		return JsonResponse(json_data)
-	return redirect('calcschemas:calc_schema_list')
-
-
 class CreateCalcSchemaView(LoginRequiredMixin, CreateView):
     form_class = CreateCalcSchemaForm
     model = CalcSchema
@@ -86,3 +39,87 @@ class CreateCalcSchemaView(LoginRequiredMixin, CreateView):
         if qs.exists():
         	context['calc_schemas'] = qs
         return context
+
+
+@login_required
+def get_calc_schema(request, pk=None):
+    if pk:
+        instance = CalcSchema.objects.get(pk=pk)
+    calc_schema = {
+        'pk': 'test',
+    }
+
+
+@login_required
+def save_calc_schema(request, pk=None):
+    instance = None
+    if pk:
+        instance = CalcSchema.objects.get(pk=pk)
+        form = UpdateCalcSchemaForm(request.POST, instance=instance)
+    else:
+        form = CreateCalcSchemaForm(request.POST)
+    form_saved = False
+    msg = 'error'
+    if form.is_valid():
+        instance = form.save()
+
+        form_saved = True
+        msg = 'task saved'
+    else:
+        error_list = "errors: "
+        for error in form.errors:
+            error_list = error_list + " " + error
+        msg = error_list
+    if request.is_ajax():
+        json_data = {
+                "msg": msg,
+        }
+        return JsonResponse(json_data)
+    return redirect('processes:update_service_task', pk=instance.pk)
+
+
+@login_required
+def update_calc_schema_save(request, pk):
+    instance = CalcSchema.objects.get(pk=pk)
+    form = UpdateCalcSchemaForm(request.POST, instance=instance)
+    form_saved = False
+    msg = 'error'
+    if form.is_valid():
+        form.save();
+        form_saved = True
+        msg = 'task saved'
+    if request.is_ajax():
+        json_data = {
+                "msg": msg,
+        }
+        return JsonResponse(json_data)
+    return redirect('calcschemas:update_calc_schema', pk=pk)
+
+
+@login_required
+def create_calc_schema_save(request):
+    form = CreateCalcSchemaForm(request.POST)
+    form_saved = False
+    msg = 'error'
+    new_instance = None
+    if form.is_valid():
+        form.save();
+        new_instance = form_saved = True
+        msg = 'task saved'
+    if request.is_ajax():
+        json_data = {
+                "msg": msg,
+        }
+        return JsonResponse(json_data)
+    return redirect('calcschemas:update_calc_schema', pk=new_instance.pk)
+
+
+@login_required
+def delete_calc_schema(request, pk):
+    instance = CalcSchema.objects.get(pk=pk).delete()
+    if request.is_ajax():
+        json_data = {
+                "nextPath": reverse('calcschemas:calc_schema_list'),
+        }
+        return JsonResponse(json_data)
+    return redirect('calcschemas:calc_schema_list')
