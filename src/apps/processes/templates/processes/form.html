@@ -4,7 +4,7 @@
     {% url 'processes:service_task_list' as service_task_list %}
     <form class="service-task-form" method='POST' action="{{ service_task_action }}" delete="{{ delete_service_task }}" data-next-url="{{ service_task_list }}">
         <table>
-            <tr><col width="100"><th>Name:</th><td><b><u>{{ object.name }}</u></b></td></tr>
+            <tr><col width="100"><th>Name:</th><td><div id="{{ form.name.id_for_label }}"><b><u>{{ object.name }}</u></b></div></td></tr>
         </table>
         <hr/>
 {% else %}
@@ -71,7 +71,7 @@
                 <td>{{ form.gateway_count }}</td>
             </tr>
         </table>
-        <div class='mx-3 my-3'>
+        <div class='mx-3 my-3 form-control-buttons'>
             <button type='submit' class='btn btn-default'>Save</button>
             <button type='reset' class='btn btn-default'>Reset</button>
             <button type='reset' name='delete' class='btn btn-default'>Delete</button>

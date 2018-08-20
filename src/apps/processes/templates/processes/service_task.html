@@ -55,7 +55,7 @@
 				</div>
 
 				<div class='row'>
-					<div class='col-12 mt-3''>
+					<div class='col-12 mt-3'>
 	
 						<form class="service-task-calculation-form" method='POST' action="#">
 						<table>
@@ -127,17 +127,42 @@
 	
 	$(document).ready(function() {
 
-		function prepareForm(documentForm, check_ref) {
-
-			var documentFormMethod = documentForm.attr("method");
-			var documentFormEndpoint = documentForm.attr("action");
+		function prepareForm(documentForm, check_ref, referenceForm) {
 
 			var deleteBtn = documentForm.find("[name='delete']");
-			var documentFormDeleteEndpoint = documentForm.attr("delete");
-			var nextUrl = documentForm.attr('data-next-url');
+		
+			function send_ref_form() {
+				var referenceFormMethod = referenceForm.attr("method");
+				var referenceFormEndpoint = referenceForm.attr("action");
+				var referenceFormData = referenceForm.serialize();
+				$.ajax({
+					method: referenceFormMethod,
+					url: referenceFormEndpoint,
+					data: referenceFormData,
+					success: function(data) {
+						console.log("msg: " + data.msg + ", " + data.id);
+						send_form(data.id);
+					},
+					error: function(errorData) {
+						console.log(errorData.responseJSON);
+
+						var jsonData = errorData.responseJSON;
+						var msg = errorData.responseJSON.msg;
+
+						//$.each(jsonData, function(key, value) { // key, value VS array index, object
+						//	msg += key + ": " + value[0].message + "<br/>";
+						//});
+
+						$.alert({
+							title: "Oops!",
+							content: msg,
+							theme: "modern"});
+					}
+				});
+			}
 
 			function get_ref() {
-				var calc_schema_list = $('.calc_schemas');
+				var calc_schema_list = $('.nav.calc_schemas');
 				var calc_schema_active = calc_schema_list.find("a.model-object.active");
 				var object_id = calc_schema_active.attr("model-object-id");
 				if ('undefined' !== typeof object_id) {
@@ -146,14 +171,13 @@
 				return ""
 			}
 
-
-			documentForm.submit(function(event) {
-				event.preventDefault();
-
+			function send_form(reference_id) {
+				var documentFormMethod = documentForm.attr("method");
+				var documentFormEndpoint = documentForm.attr("action");
 				var documentFormData = documentForm.serialize();
 
 				if (check_ref) {
-					documentFormData = documentFormData + "&reference=" + get_ref();
+					documentFormData = documentFormData + "&reference=" + reference_id;
 				}
 
 				$.ajax({
@@ -191,6 +215,17 @@
 							theme: "modern"});
 					}
 				});
+			}
+
+
+			documentForm.submit(function(event) {
+				event.preventDefault();
+
+				
+				
+				send_ref_form();
+
+				
 			});
 
 
@@ -204,6 +239,10 @@
 
 
 			deleteBtn.click(function(event) {
+
+				
+				var documentFormDeleteEndpoint = documentForm.attr("delete");
+				var nextUrl = documentForm.attr('data-next-url');
 				var documentFormData = documentForm.serialize();
 
 				$.ajax({
@@ -246,9 +285,11 @@
 		}
 
 		var serviceTaskForm = $(".service-task-form");
-		prepareForm(serviceTaskForm, true);
 		var calcSchemaForm = $(".calc-schema-form");
-		prepareForm(calcSchemaForm, false);
+		prepareForm(serviceTaskForm, true, calcSchemaForm);
+
+		calcSchemaForm.find(".form-control-buttons").remove();
+		//prepareForm(calcSchemaForm, false);
 		
 
 
@@ -285,8 +326,6 @@
 			size = size + parseInt($("#id_file_input_count").val());
 
 			size = size * parseInt($("#id_gateway_count").val());
-
-			console.log(size)
 
 			var size_selection = 'X';
 
@@ -357,6 +396,121 @@
 
 <script type="text/javascript">
 
+	$(document).ready(function() {
+
+		var calculationForm = $(".calc-schema-form");
+		var calculationNav = $(".nav.calc_schemas");
+		var anker = calculationNav.find(".dropdown-menu").find("a.model-object");
+		var anker_new = calculationNav.find(".dropdown-menu").find("a.model-object-new");
+		var getCalcSchemaEndpoint = "{% url 'calcschemas:get_calc_schema' %}";
+
+		function change_active(object_id) {
+			var calc_schema_list = $('.calc_schemas');
+			var calc_schema_active_rm = calc_schema_list.find("a.model-object.active");
+			calc_schema_active_rm.removeClass("active");
+			anker_new.removeClass("active");
+			if (object_id == "new") {
+				anker_new.addClass("active");
+			} else {
+				var calc_schema_active_add = calc_schema_list.find("a.model-object[model-object-id=" + object_id + "]");
+				calc_schema_active_add.addClass("active");
+			}
+		}
+
+
+		anker.click(function(event) {
+			event.preventDefault();
+			
+			var documentFormData = "calc_schema_id=" + $(this).attr("model-object-id");
+			var new_action = $(this).attr("action");
+
+			$.ajax({
+				method: "POST",
+				url: getCalcSchemaEndpoint,
+				data: documentFormData,
+				success: function(data) {
+
+					//setTimeout(function() {
+					//	displaySubmitting(documentFormSubmitBtn, documentFormSubmitBtnTxt, false)}, 500);
+
+					//documentForm[0].reset();
+					//console.log($(".calc-schema-form").text());
+					//console.log($(".calc-schema-form").find("#id_name").text());
+					//console.log(data.name);
+
+					console.log(data.name);
+					$(".calc-schema-form").find("#id_name").replaceWith('<div id="id_name"><b><u>' + data.name + '</u></b></div>');
+					//$(".calc-schema-form").find("#id_name").text(data.name);
+
+					$("#id_size_m").val(data.size_m);
+					$("#id_size_l").val(data.size_l);
+
+					$("#id_effort_factor_s").val(data.effort_factor_s);
+					$("#id_effort_factor_m").val(data.effort_factor_m);
+					$("#id_effort_factor_l").val(data.effort_factor_l);
+
+					$("#id_panel_base_effort").val(data.panel_base_effort);
+					$("#id_input_field_base_effort").val(data.input_field_base_effort);
+					$("#id_button_base_effort").val(data.button_base_effort);
+					$("#id_dropdown_base_effort").val(data.dropdown_base_effort);
+					$("#id_checkbox_base_effort").val(data.checkbox_base_effort);
+					$("#id_radio_button_base_effort").val(data.radio_button_base_effort);
+					$("#id_file_input_base_effort").val(data.file_input_base_effort);
+
+					calculationForm.attr("action", new_action);
+
+					change_active(data.id);
+
+					//redirectToNext(nextUrl, 1500);
+				},
+				error: function(errorData) {
+					console.log(errorData.responseJSON);
+
+					//setTimeout(function() {
+					//	displaySubmitting(documentFormSubmitBtn, documentFormSubmitBtnTxt, false)}, 500);
+
+					var jsonData = errorData.responseJSON;
+					var msg = "";
+
+					$.each(jsonData, function(key, value) { // key, value VS array index, object
+						msg += key + ": " + value[0].message + "<br/>";
+					});
+
+					$.alert({
+						title: "Oops!",
+						content: "msg",
+						theme: "modern"});
+				}
+			});
+		});
+
+		anker_new.click(function(event) {
+			event.preventDefault();
+
+			$(".calc-schema-form").find("#id_name").replaceWith('<input type="text" name="name" maxlength="120" required id="id_name">');
+
+			$("#id_size_m").val("25");
+			$("#id_size_l").val("100");
+
+			$("#id_effort_factor_s").val("1");
+			$("#id_effort_factor_m").val("1.5");
+			$("#id_effort_factor_l").val("3");
+
+			$("#id_panel_base_effort").val("0");
+			$("#id_input_field_base_effort").val("0");
+			$("#id_button_base_effort").val("0");
+			$("#id_dropdown_base_effort").val("0");
+			$("#id_checkbox_base_effort").val("0");
+			$("#id_radio_button_base_effort").val("0");
+			$("#id_file_input_base_effort").val("0");
+
+			calculationForm.attr("action", new_action);
+
+			change_active("new");
+
+		});
+
+	});
 
 
 </script>

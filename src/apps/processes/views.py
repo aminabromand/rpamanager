@@ -76,6 +76,7 @@ def save_service_task(request, pk=None):
         instance = form.save(commit=False)
 
         calc_schema_id = request.POST.get("reference", None)
+        print(calc_schema_id)
         if calc_schema_id:
             calc_schema_instance = CalcSchema.objects.get(pk=calc_schema_id)
             instance.calcschema = calc_schema_instance

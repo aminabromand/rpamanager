@@ -9,10 +9,10 @@
     <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Calc Schemas</a>
     <div class="dropdown-menu">
       {% for object in objects %}
-		<a class="dropdown-item{% if active_id == object.id %} active{% endif %} model-object" model-object-id="{{ object.id }}" href="{{ object.get_absolute_url }}">{{ object.name }}</a>
+		<a class="dropdown-item{% if active_id == object.id %} active{% endif %} model-object" model-object-id="{{ object.id }}" href="{{ object.get_absolute_url }}" action="{% url 'calcschemas:update_calc_schema-save' object.id %}">{{ object.name }}</a>
 		{% endfor %}
 		<div class="dropdown-divider"></div>
-  		<a class="dropdown-item" href="{{ new_schema_url }}">New Calc Schema</a>
+  		<a class="dropdown-item model-object-new" href="{{ new_schema_url }}" action="{% url 'calcschemas:create_calc_schema-save' %}">New Calc Schema</a>
     </div>
   </li>
 </ul>
