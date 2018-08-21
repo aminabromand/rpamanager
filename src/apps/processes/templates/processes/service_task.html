@@ -83,7 +83,6 @@
 	</div>
 
 
-	        	
 
 {% endblock %}
 
@@ -140,11 +139,9 @@
 					url: referenceFormEndpoint,
 					data: referenceFormData,
 					success: function(data) {
-						console.log("msg: " + data.msg + ", " + data.id);
 						send_form(data.id);
 					},
 					error: function(errorData) {
-						console.log(errorData.responseJSON);
 
 						var jsonData = errorData.responseJSON;
 						var msg = errorData.responseJSON.msg;
@@ -457,6 +454,7 @@
 					$("#id_radio_button_base_effort").val(data.radio_button_base_effort);
 					$("#id_file_input_base_effort").val(data.file_input_base_effort);
 
+					console.log("action: " + new_action)
 					calculationForm.attr("action", new_action);
 
 					change_active(data.id);
@@ -512,6 +510,20 @@
 
 	});
 
+
+</script>
+
+<script type="text/javascript">
+	var calc_schema_app = $(".calc-schema-form").find("#id_application");
+	var service_task_app = $(".service-task-form").find("#id_application");
+
+ 	calc_schema_app.change(function () {
+		service_task_app.val($(this).val());
+    });
+
+	service_task_app.change(function () {
+		calc_schema_app.val($(this).val());
+    });
 
 </script>
 

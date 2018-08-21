@@ -1,0 +1,38 @@
+{% if object %}
+    {% url 'applications:update_application-save' object.id as application_action %}
+    {% url 'applications:delete_application' object.id as delete_application %}
+    {% url 'applications:application_list' as application_list %}
+    <form class="{{ form_class }}" method='POST' action="{{ application_action }}" delete="{{ delete_application }}" data-next-url="{{ application_list }}">
+        <table>
+            <tr><col width="100"><th>Name:</th><td><div id="{{ form.name.id_for_label }}"><b><u>{{ object.name }}</u></b></div></td></tr>
+        </table>
+        <hr/>
+{% else %}
+    {% url 'applications:create_application-save' as application_action %}
+    <form class="{{ form_class }}" method='POST' action="{{ application_action }}">
+        <table>
+            <tr><col width="100"><th><label for="{{ form.name.id_for_label }}">Name:</label></th><td>{{ form.name }}</td></tr>
+        </table>
+        <hr/>
+{% endif %}
+
+        {% csrf_token %}
+        <table>
+            <th><label for="{{ form.description.id_for_label }}">Description:</label></th>
+                <td>{{ form.description }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.app_type.id_for_label }}">Application type:</label></th>
+                <td>{{ form.app_type }}</td>
+            </tr>
+            <tr>
+                <th><label for="{{ form.has_interface.id_for_label }}">App Interface available?:</label></th>
+                <td>{{ form.has_interface }}</td>
+            </tr>
+        </table>
+        <div class='mx-3 my-3 form-control-buttons'>
+            <button type='submit' class='btn btn-default'>Save</button>
+            <button type='reset' class='btn btn-default'>Reset</button>
+            <button type='reset' name='delete' class='btn btn-default'>Delete</button>
+        </div>
+</form>

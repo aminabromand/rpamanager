@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style type="text/css">
+	.numberbox {
+    	width: 5em;
+	}
+</style>
+
+
+	<div class='container'>
+		<h1> Application </h1>
+		<div class='row'>
+	        <div class='col-12'>
+				{% if object %}
+					{% include 'applications/navbar.html' with objects=applications active_id=object.id object_type='applications' %}
+				{% else %}
+					{% include 'applications/navbar.html' with objects=applications object_type='applications' %}
+				{% endif %}
+
+	        </div>
+		</div>
+		<div class='row mt-3'>
+			<div class='col-12'>
+
+				{% if object %}
+					<!--<h1> {{ object.name }} </h1>-->
+					{% include 'applications/form.html' with form=form object=object  form_class='application-form'  %}
+				{% else %}
+					<!--<h1> New Calc Schema </h1>-->
+					{% include 'applications/form.html' with form=form  form_class='application-form'  %}
+				{% endif %}
+
+			</div>
+		</div>
+	    
+	</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+});
+</script>
+
+<script type="text/javascript">
+	
+	$(document).ready(function() {
+
+		var objectForm = $(".calc-schema-form");
+		var objectFormMethod = objectForm.attr("method");
+		var objectFormEndpoint = objectForm.attr("action");
+
+		var deleteBtn = objectForm.find("[name='delete']");
+		var objectFormDeleteEndpoint = objectForm.attr("delete");
+		var nextUrl = objectForm.attr('data-next-url');
+		
+
+		objectForm.submit(function(event) {
+			event.preventDefault();
+
+			var objectFormData = objectForm.serialize();
+
+			console.log("HAAAAAALLOO");
+
+			$.ajax({
+				method: objectFormMethod,
+				url: objectFormEndpoint,
+				data: objectFormData,
+				success: function(data) {
+
+					console.log("HAAAAAALLOO !!!!");
+
+					//setTimeout(function() {
+					//	displaySubmitting(objectFormSubmitBtn, objectFormSubmitBtnTxt, false)}, 500);
+
+					//objectForm[0].reset();
+					$.alert({
+						title: "Success!",
+						// content: data.form_saved,
+						content: data.msg,
+						theme: "modern"});
+				},
+				error: function(errorData) {
+					console.log(errorData.responseJSON);
+
+					//setTimeout(function() {
+					//	displaySubmitting(objectFormSubmitBtn, objectFormSubmitBtnTxt, false)}, 500);
+
+					var jsonData = errorData.responseJSON;
+					var msg = "";
+
+					$.each(jsonData, function(key, value) { // key, value VS array index, object
+						msg += key + ": " + value[0].message + "<br/>";
+					});
+
+					$.alert({
+						title: "Oops!",
+						content: "msg",
+						theme: "modern"});
+				}
+			});
+		});
+
+
+		function redirectToNext(nextPath, timeoffset) {
+			if (nextPath) {
+				setTimeout(function(){
+					window.location.href = nextPath;
+				}, timeoffset);
+			}
+		}
+
+
+		deleteBtn.click(function(event) {
+			var objectFormData = objectForm.serialize();
+
+			$.ajax({
+				method: "DELETE",
+				url: objectFormDeleteEndpoint,
+				data: objectFormData,
+				success: function(data) {
+
+					//setTimeout(function() {
+					//	displaySubmitting(objectFormSubmitBtn, objectFormSubmitBtnTxt, false)}, 500);
+
+					//objectForm[0].reset();
+					$.alert({
+						title: "Success!",
+						// content: data.form_saved,
+						content: data.msg,
+						theme: "modern"});
+					redirectToNext(nextUrl, 1500);
+				},
+				error: function(errorData) {
+					console.log(errorData.responseJSON);
+
+					//setTimeout(function() {
+					//	displaySubmitting(objectFormSubmitBtn, objectFormSubmitBtnTxt, false)}, 500);
+
+					var jsonData = errorData.responseJSON;
+					var msg = "";
+
+					$.each(jsonData, function(key, value) { // key, value VS array index, object
+						msg += key + ": " + value[0].message + "<br/>";
+					});
+
+					$.alert({
+						title: "Oops!",
+						content: "msg",
+						theme: "modern"});
+				}
+			});
+		});
+	});
+
+</script>
+
+{% endblock %}
+
+

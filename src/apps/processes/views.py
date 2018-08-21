@@ -19,10 +19,12 @@ class ServiceTaskListView(LoginRequiredMixin, ListView):
 
 
 class ServiceTaskView(LoginRequiredMixin, View):
+    calc_schemas = None
     def get_context_data(self, *args, **kwargs):
         context = super(ServiceTaskView, self).get_context_data(*args, **kwargs)
         qs = CalcSchema.objects.all()
         if qs.exists():
+            self.calc_schemas = qs
             context['calc_schemas'] = qs
         return context
 
@@ -35,8 +37,14 @@ class UpdateServiceTaskView(ServiceTaskView, UpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super(UpdateServiceTaskView, self).get_context_data(*args, **kwargs)
         qs = ServiceTask.objects.all()
+
+        if self.calc_schemas:
+            self.calc_schemas = self.calc_schemas.filter(application=self.object.application)
+            context['calc_schemas'] = self.calc_schemas
+
         if qs.exists():
             context['service_tasks'] = qs
+
         if self.object.calcschema:
             context['calc_schema_object'] = self.object.calcschema
             calc_schema_form = UpdateCalcSchemaForm(instance=self.object.calcschema)
@@ -44,10 +52,11 @@ class UpdateServiceTaskView(ServiceTaskView, UpdateView):
         else:
             calc_schema_form = CreateCalcSchemaForm()
             context['calc_schema_form'] = calc_schema_form
+
         return context
 
 
-class CreateServiceTaskView(LoginRequiredMixin, CreateView):
+class CreateServiceTaskView(ServiceTaskView, CreateView):
     form_class = CreateServiceTaskForm
     model = ServiceTask
     template_name = 'processes/service_task.html'
@@ -76,7 +85,6 @@ def save_service_task(request, pk=None):
         instance = form.save(commit=False)
 
         calc_schema_id = request.POST.get("reference", None)
-        print(calc_schema_id)
         if calc_schema_id:
             calc_schema_instance = CalcSchema.objects.get(pk=calc_schema_id)
             instance.calcschema = calc_schema_instance

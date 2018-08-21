@@ -35,6 +35,7 @@ class CreateCalcSchemaForm(forms.ModelForm):
         model = CalcSchema
         fields = [
             'name',
+            'application',
             'size_m',
             'size_l',
             'effort_factor_s',

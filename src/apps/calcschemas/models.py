@@ -1,10 +1,14 @@
 from django.db import models
 from django.urls import reverse
 
+from apps.applications.models import Application
+
 # Create your models here.
 
 class CalcSchema(models.Model):
 	name 					    = models.CharField(max_length=120, unique=True)
+
+	application					= models.ForeignKey(Application, on_delete=models.CASCADE)
 
 	size_m				        = models.IntegerField(default=25)
 	size_l		                = models.IntegerField(default=100)

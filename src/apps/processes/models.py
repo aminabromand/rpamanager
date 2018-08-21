@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
+from apps.applications.models import Application
 from apps.calcschemas.models import CalcSchema
 
 # Create your models here.
@@ -9,24 +10,6 @@ class Process(models.Model):
 	name			= models.CharField(max_length=120)
 	description		= models.TextField()
 	# customer		= models.ForeignKey(User, null=True, blank=True)
-
-	updated 		= models.DateTimeField(auto_now=True)
-	timestamp 		= models.DateTimeField(auto_now_add=True)
-
-	def __str__(self):
-		return str(self.name)
-
-
-APP_TYPES = (
-	('fat', 'Fat Client'),
-	('web', 'Web Client'),
-)
-
-class Application(models.Model):
-	name			= models.CharField(max_length=120)
-	description		= models.TextField()
-	app_type		= models.CharField(max_length=20, choices=APP_TYPES)
-	has_interface	= models.BooleanField(default=False)
 
 	updated 		= models.DateTimeField(auto_now=True)
 	timestamp 		= models.DateTimeField(auto_now_add=True)
@@ -44,9 +27,9 @@ class ServiceTask(models.Model):
 	name 					= models.CharField(max_length=120, unique=True)
 	description				= models.TextField()
 
-	application				= models.ForeignKey(Application, null=True, blank=True, on_delete=models.CASCADE)
-	processes				= models.ManyToManyField(Process, blank=True)
+	application				= models.ForeignKey(Application, on_delete=models.CASCADE)
 	calcschema				= models.ForeignKey(CalcSchema, null=True, blank=True, on_delete=models.SET_NULL)
+	processes				= models.ManyToManyField(Process, blank=True)
 
 	schedule_type			= models.CharField(max_length=20, choices=SCHEDULE_TYPES)
 	exec_duration_man		= models.IntegerField(default=0)

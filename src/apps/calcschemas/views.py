@@ -89,7 +89,6 @@ def save_calc_schema(request, pk=None):
         form_saved = True
         msg = 'task saved'
     else:
-        #error_list = "errors: "
         error_list = []
         for error in form.errors:
             error_list.append(str(error) + ': ' + str(form.errors[error]))

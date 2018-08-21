@@ -17,11 +17,18 @@
 			<h2> Service Task List </h2>
 			
 			<table>
-				<tr><th>Service Task Name</th></tr>
+				<tr><th>Service Task Name</th><th>Application</th><th>Calc Schema</th></tr>
 				{% for obj in object_list %}
 					<tr>
+						<col width=200><col width=200>
 						<td>
 							<a href='{{ obj.get_absolute_url }}'> {{ obj.name }} </a> <br>
+						</td>
+						<td>
+							<a href='{{ obj.application.get_absolute_url }}'> {{ obj.application.name }} </a> <br>
+						</td>
+						<td>
+							<a href='{{ obj.calcschema.get_absolute_url }}'> {{ obj.calcschema.name }} </a> <br>
 						</td>
 					</tr>
 

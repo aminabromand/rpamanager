@@ -1,3 +1,5 @@
+{% url 'account:logout' as logout_url %}
+{% url 'applications:application_list' as application_list_url %}
 {% url 'processes:service_task_list' as service_task_list_url %}
 {% url 'calcschemas:calc_schema_list' as calc_schema_list_url %}
 
@@ -13,17 +15,20 @@
 
 	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	    <ul class="navbar-nav mr-auto">
-	      <li class="nav-item {% if request.path == service_task_list_url %}active{% endif %}">
-	        <a class="nav-link" href="{{ service_task_list_url }}">Service Tasks<span class="sr-only">(current)</span></a>
-	      </li>
+				<li class="nav-item {% if request.path == application_list_url %}active{% endif %}">
+					<a class="nav-link" href="{{ application_list_url }}">Applications</a>
+				</li>
 	      <li class="nav-item {% if request.path == calc_schema_list_url %}active{% endif %}">
-	        <a class="nav-link" href="{{ calc_schema_list_url }}">Calc Schemas</a>
+					<a class="nav-link" href="{{ calc_schema_list_url }}">Calc Schemas</a>
 	      </li>
+				<li class="nav-item {% if request.path == service_task_list_url %}active{% endif %}">
+					<a class="nav-link" href="{{ service_task_list_url }}">Service Tasks</a>
+				</li>
 
 
 	      {% if request.user.is_authenticated %}
 	      <li class="nav-item {% if request.path == '' %}active{% endif %}">
-	        <a class="nav-link" href="#">Logout</a>
+	        <a class="nav-link" href="{{ logout_url }}">Logout</a>
 	      </li>
 	      {% else %}
 	      <li class="nav-item {% if request.path == '' %}active{% endif %}">

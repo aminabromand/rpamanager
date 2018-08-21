@@ -24,14 +24,6 @@ class UpdateServiceTaskForm(forms.ModelForm):
 			'file_input_count',
 			'gateway_count',
 		]
-		#labels = {
-		#	'schedule_tpye': 'Hollla :)',
-		#	'radio_button_count': 'Hollla :)',
-		#}
-		#help_texts = {
-		#	'schedule_tpye': 'Beautiful help text.',
-		#	'radio_button_count': 'Beautiful help text.',
-		#}
 		widgets = {
 			'description': Textarea(attrs={'cols': 20, 'rows': 3}),
 		}
@@ -43,7 +35,7 @@ class CreateServiceTaskForm(forms.ModelForm):
 		fields = [
 			'name',
 			'description',
-			# 'application',
+			'application',
 			# 'processes',
 			'schedule_type',
 			'exec_duration_man',
@@ -58,14 +50,6 @@ class CreateServiceTaskForm(forms.ModelForm):
 			'file_input_count',
 			'gateway_count',
 		]
-		#labels = {
-		#	'schedule_tpye': 'Hollla :)',
-		#	'radio_button_count': 'Hollla :)',
-		#}
-		help_texts = {
-			'schedule_tpye': 'Beautiful help text.',
-			'radio_button_count': 'Beautiful help text.',
-		}
 		widgets = {
 			'description': Textarea(attrs={'cols': 20, 'rows': 3}),
 		}

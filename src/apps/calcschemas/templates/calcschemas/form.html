@@ -5,6 +5,10 @@
     <form class="{{ form_class }}" method='POST' action="{{ calc_schema_action }}" delete="{{ delete_calc_schema }}" data-next-url="{{ calc_schema_list }}">
         <table>
             <tr><col width="100"/><th><label for="id_name">Name:</label></th><td><div id="id_name"><b><u>{{ object.name }}</u></b></div></td></tr>
+            <tr>
+                <th><label for="id_application">Application:</label></th>
+                <td>{{ object.application.name }}</td>
+            </tr>
         </table>
         <hr/>
 {% else %}
@@ -12,6 +16,10 @@
     <form class="{{ form_class }}" method='POST' action="{{ calc_schema_action }}">
         <table>
             <tr><col width="100"/><th><label for="{{ form.name.id_for_label }}">Name:</label></th><td>{{ form.name }}</td></tr>
+            <tr>
+                <th><label for="{{ form.application.id_for_label }}">Application:</label></th>
+                <td>{{ form.application }}</td>
+            </tr>
         </table>
         <hr/>
 {% endif %}

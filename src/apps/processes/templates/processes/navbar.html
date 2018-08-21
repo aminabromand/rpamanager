@@ -1,18 +1,20 @@
-{% url 'processes:create_service_task' as new_task_url %}
-{% url 'processes:service_task_list' as service_task_list %}
+{% url 'processes:create_service_task' as new_obj_url %}
+{% url 'processes:service_task_list' as obj_list %}
 
 <ul class="nav nav-pills {{ object_type }}">
   <li class="nav-item">
-    <a class="nav-link" href="{{ service_task_list }}">Back to List</a>
+    <a class="nav-link" href="{{ obj_list }}">Back to List</a>
   </li>
   <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Service Tasks</a>
     <div class="dropdown-menu">
       {% for object in objects %}
-		<a class="dropdown-item{% if active_id == object.id %} active{% endif %} model-object" model-object-id="{{ object.id }}" href="{{ object.get_absolute_url }}" action="{% url 'calcschemas:update_calc_schema-save' object.id %}">{{ object.name }}</a>
-		{% endfor %}
+        {% url 'processes:update_service_task-save' object.id as update_obj %}
+        {% url 'processes:create_service_task-save' object.id as create_obj %}
+        <a class="dropdown-item{% if active_id == object.id %} active{% endif %} model-object" model-object-id="{{ object.id }}" href="{{ object.get_absolute_url }}" action="{{ update_obj }}">{{ object.name }}</a>
+		  {% endfor %}
 		<div class="dropdown-divider"></div>
-  		<a class="dropdown-item  model-object-new" href="{{ new_task_url }}" action="{% url 'calcschemas:create_calc_schema-save' %}">New Service Task</a>
+  		<a class="dropdown-item  model-object-new" href="{{ new_obj_url }}" action="{{ create_obj }}">New Service Task</a>
     </div>
   </li>
 </ul>

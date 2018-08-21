@@ -1,0 +1,21 @@
+{% url 'applications:create_application' as new_obj_url %}
+{% url 'applications:application_list' as obj_list %}
+
+
+<ul class="nav nav-pills {{ object_type }}">
+  <li class="nav-item">
+    <a class="nav-link" href="{{ obj_list }}">Back to List</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Applications</a>
+    <div class="dropdown-menu">
+      {% for object in objects %}
+        {% url 'applications:update_application-save' object.id as update_obj %}
+        {% url 'applications:create_application-save' object.id as create_obj %}
+	    	<a class="dropdown-item{% if active_id == object.id %} active{% endif %} model-object" model-object-id="{{ object.id }}" href="{{ object.get_absolute_url }}" action="{{ update_obj }}">{{ object.name }}</a>
+		  {% endfor %}
+		<div class="dropdown-divider"></div>
+  		<a class="dropdown-item  model-object-new" href="{{ new_obj_url }}" action="{{ create_obj }}">New Application</a>
+    </div>
+  </li>
+</ul>
